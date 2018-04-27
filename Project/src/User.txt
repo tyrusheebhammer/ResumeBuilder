@@ -1,0 +1,4 @@
+serverUsername=ResumeBuilder38
+serverPassword=Password38
+databaseName=ResumeBuilder
+serverName=golem.csse.rose-hulman.edu
