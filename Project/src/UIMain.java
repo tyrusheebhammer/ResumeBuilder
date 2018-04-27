@@ -1,8 +1,12 @@
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 import processing.core.PApplet;
 
@@ -21,6 +25,7 @@ public class UIMain extends PApplet {
 	private ArrayList<String> mockDatabase;
 	private String consoleText;
 	private DbConnection dbc;
+	private Connection con;
 
 	public void settings() {
 		page = "login";
@@ -38,6 +43,7 @@ public class UIMain extends PApplet {
 		consoleText = "";
 		dbc = new DbConnection("golem.csse.rose-hulman.edu", "ResumeBuilder");
 		dbc.connect("ResumeBuilder38", "Password38");
+		con=dbc.getConnection();
 	}
 
 	public void draw() {
@@ -121,14 +127,15 @@ public class UIMain extends PApplet {
 	
 	public String getLoginInfo(String Username) {
 		Statement stmt = null;
-		Connection con=dbc.getConnection();
+		System.out.println("here");
 		String password=null;
 		try {
 			stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(
-					"Select StudentID From Student Where StudentID="+Username);
+					"Select Password From Student Where StudentID="+"'"+Username+"'");
 			if (rs.next()) {
-				password = rs.getString("password");
+				password = rs.getString("Password");
+				System.out.println(password);
 			}
 			return password;
 			
@@ -137,7 +144,29 @@ public class UIMain extends PApplet {
 			return null;
 		}
 	}
+	private void addUser(String username, String password) {
 
+		CallableStatement cs = null;
+
+		Connection con=dbc.getConnection();
+		
+		try {
+
+	        cs = con.prepareCall("{? = call AddStudent( ?, ?, ?, ?, ?, ?, ?)}");
+	        cs.registerOutParameter(1, Types.INTEGER);
+	        cs.setString(2, username);
+	        cs.setString(3, "TempFirstName");
+	        cs.setString(4, "TMI");
+	        cs.setString(5, "TempLastName");
+	        cs.setString(6, "TempAddress");
+	        cs.setInt(7, 0000000000);
+	        cs.setString(8, password);
+	        cs.execute();
+	        
+	    } catch (SQLException e ) {
+	    	JOptionPane.showMessageDialog(null, e.getMessage());
+	    }
+	}
 	public void mouseClicked() {
 		
 		
@@ -158,16 +187,21 @@ public class UIMain extends PApplet {
 			}
 			if (registerButton.clicked() && !rUsername.getEntry().isEmpty() && !rPassword.getEntry().isEmpty()) {
 				if (rPassword.getEntry().equals(rPasswordConfirm.getEntry())) {
-					if (mockDatabase.contains(rUsername.getEntry() + ", " + rPassword.getEntry())) {
-						consoleText = "Error: User already exists";
-					} else {
-						mockDatabase.add(rUsername.getEntry() + ", " + rPassword.getEntry());
-						page = "login";
-						rUsername.clear();
-						rPassword.clear();
-						rPasswordConfirm.clear();
-						consoleText = "";
-					}
+					
+					//ADD THIS BELLOW LATER
+					addUser(rUsername.getEntry(),rPassword.getEntry());
+					page = "login";
+					rUsername.clear();
+					rPassword.clear();
+					rPasswordConfirm.clear();
+					consoleText = "";
+					
+//					if (getLoginInfo(rUsername.getEntry()).equals(rPassword.getEntry())) {
+//						consoleText = "Error: User already exists";
+//					} else {
+//						//mockDatabase.add(rUsername.getEntry() + ", " + rPassword.getEntry());
+//						// CHUNK ABOVE GOES HERE
+//					}
 
 				} else {
 					consoleText = "Error: Passwords do not match";
@@ -178,6 +212,7 @@ public class UIMain extends PApplet {
 
 			if (loginButton.clicked() && !username.getEntry().isEmpty() && !password.getEntry().isEmpty()) {
 				consoleText = "Error: User login failed. Please enter a valid username and password";
+				
 				if (getLoginInfo(username.getEntry()).equals(password.getEntry())) {
 					//mockDatabase.contains(username.getEntry() + ", " + password.getEntry())
 					consoleText = "User login successful";

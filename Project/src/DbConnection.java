@@ -3,6 +3,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DbConnection {
+	private final String SampleURL = "jdbc:sqlserver://${dbServer};databaseName=${dbName};user=${user};password={${pass}}";
+	
 	private Connection connection = null;
 
 	private String databaseName;
@@ -20,7 +22,9 @@ public class DbConnection {
                 + "databaseName="+databaseName+";"  
                 + "user="+user+";"  
                 + "password="+pass;  
-		try {  
+		
+		
+		try {  			
             connection = DriverManager.getConnection(connectionString);  
             return true;
 
