@@ -1,0 +1,14 @@
+CREATE DATABASE "ResumeBuilder"
+ON
+	PRIMARY (NAME = 'ResumeBuilder',
+	FILENAME = 'E:\Database\MSSQL12.MSSQLSERVER\MSSQL\DATA\ResumeBuilder.mdf',
+	SIZE = 20MB,
+	MAXSIZE = 200MB,
+	FILEGROWTH = 10%)
+LOG ON 
+	( NAME = 'ResumeBuilderLog',
+	FILENAME = 'E:\Database\MSSQL12.MSSQLSERVER\MSSQL\DATA\ResumeBuilderLog.ldf',
+	SIZE = 20MB,
+	MAXSIZE = 200MB,
+	FILEGROWTH = 10%)
+COLLATE SQL_Latin1_General_Cp1_CI_AS

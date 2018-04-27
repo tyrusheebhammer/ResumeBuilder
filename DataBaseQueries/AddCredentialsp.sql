@@ -1,0 +1,14 @@
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[AddCredential](
+	@CredID int )
+AS
+BEGIN
+	INSERT INTO Credential(CredID)
+	VALUES(@CredID);
+END
+GO
