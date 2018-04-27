@@ -1,10 +1,18 @@
+USE [ResumeBuilder]
+GO
+Drop Table Company
+/****** Object:  Table [dbo].[Company]    Script Date: 4/27/2018 12:10:49 AM ******/
+SET ANSI_NULLS ON
+GO
 
-Use ResumeBuilder
-Go
-Create Table Company(
-	CID int,
-	Name nvarchar(100) not null,
-	Prestige int,
-	Num_Employees int,
-	Primary Key(CID)
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Company](
+	[CID] [varchar](50),
+	[Name] [varchar](50) NOT NULL
+	PRIMARY KEY(CID)
 )
+GO
+
+
