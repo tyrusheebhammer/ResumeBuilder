@@ -33,6 +33,7 @@ if exists (SELECT * FROM sysobjects WHERE name = 'Credential') drop table [Crede
 
 if exists (SELECT * FROM sysobjects WHERE name = 'Company') drop table [Company]
 
+
 Go
 
 SET QUOTED_IDENTIFIER ON
@@ -58,8 +59,8 @@ Create Table [Credential](
 Go
 
 CREATE TABLE [dbo].[Company](
-	[CID] [varchar](50),
-	[Name] [varchar](50) NOT NULL
+	[CID] [nvarchar](50),
+	[Name] [nvarchar](50) NOT NULL
 	PRIMARY KEY(CID)
 )
 GO
@@ -144,9 +145,11 @@ Create Table GivesSkill(
 Go
 
 CREATE TABLE [dbo].[Offers](
-	[CID] [nvarchar](50) NULL,
-	[PosID] [nvarchar](50) NULL
-) ON [PRIMARY]
+	[CID] [nvarchar](50),
+	[PosID] int 
+	Foreign Key(CID) references Company(CID),
+	Foreign Key(PosID) references Position(PosID)
+)
 Go
 
 CREATE TABLE [dbo].[Requires](
