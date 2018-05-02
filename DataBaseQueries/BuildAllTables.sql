@@ -95,8 +95,8 @@ GO
 CREATE TABLE [dbo].[AppliesFor](
 	[StudentID] [nvarchar](8),
 	[PosID] int, 
-	Foreign Key(StudentID) references Student(studentID),
-	Foreign Key(PosID) references Position(PosID)
+	Foreign Key(StudentID) references Student(studentID) ON DELETE CASCADE ON UPDATE CASCADE ,
+	Foreign Key(PosID) references Position(PosID) ON DELETE CASCADE ON UPDATE CASCADE 
 ) 
 
 Go
@@ -104,8 +104,8 @@ Go
 CREATE TABLE [dbo].[HasTaken](
 	[CourseID] [nvarchar](10),
 	[StudentID] [nvarchar](8),
-	Foreign Key(CourseID) References Course(CourseID),
-	Foreign Key(StudentID) References Student(StudentID)
+	Foreign Key(CourseID) References Course(CourseID) ON DELETE CASCADE ON UPDATE CASCADE ,
+	Foreign Key(StudentID) References Student(StudentID) ON DELETE CASCADE ON UPDATE CASCADE 
 )  
 GO
 
@@ -115,7 +115,7 @@ Create Table Experience(
 	Description nvarchar(max) not null,
 	StartDate date not null,
 	EndDate date,
-	FOREIGN KEY (CredID) REFERENCES Credential(CredID))
+	FOREIGN KEY (CredID) REFERENCES Credential(CredID) ON DELETE CASCADE ON UPDATE CASCADE )
 
 Go
 
@@ -124,38 +124,39 @@ Create Table Degree(
 	Name nvarchar(50) not null,
 	Description nvarchar(max) not null,
 	Field nvarchar(50) not null
-	FOREIGN KEY (CredID) REFERENCES Credential(CredID)
+	FOREIGN KEY (CredID) REFERENCES Credential(CredID) ON DELETE CASCADE ON UPDATE CASCADE 
 ) 
 Go
 
 Create Table HasCredential(
 	CredID int,
 	StudentID nvarchar(8),
-	Foreign Key(CredID) references [Credential](CredID),
-	Foreign Key(StudentID) references student(StudentID))
+	Foreign Key(CredID) references [Credential](CredID) ON DELETE CASCADE ON UPDATE CASCADE ,
+	Foreign Key(StudentID) references student(StudentID) ON DELETE CASCADE ON UPDATE CASCADE 
+	) 
 
 Go
 
 Create Table GivesSkill(
 	SkillID int,
 	CourseID nvarchar(10),
-	Foreign Key(SkillID) References Skill(SkillID),
-	Foreign Key(CourseID) References Course(CourseID)
+	Foreign Key(SkillID) References Skill(SkillID) ON DELETE CASCADE ON UPDATE CASCADE ,
+	Foreign Key(CourseID) References Course(CourseID) ON DELETE CASCADE ON UPDATE CASCADE 
 )
 Go
 
 CREATE TABLE [dbo].[Offers](
 	[CID] [nvarchar](50),
 	[PosID] int 
-	Foreign Key(CID) references Company(CID),
-	Foreign Key(PosID) references Position(PosID)
+	Foreign Key(CID) references Company(CID) ON DELETE CASCADE ON UPDATE CASCADE ,
+	Foreign Key(PosID) references Position(PosID) ON DELETE CASCADE ON UPDATE CASCADE 
 )
 Go
 
 CREATE TABLE [dbo].[Requires](
 	[SkillID] int,
 	[PosID] int,
-	Foreign Key(SkillID) References Skill(SkillID),
-	Foreign Key(PosID) References Position(PosID)
+	Foreign Key(SkillID) References Skill(SkillID) ON DELETE CASCADE ON UPDATE CASCADE ,
+	Foreign Key(PosID) References Position(PosID) ON DELETE CASCADE ON UPDATE CASCADE 
 ) ON [PRIMARY]
 GO
