@@ -1,12 +1,13 @@
 Use ResumeBuilder
 Go
-SET ANSI_NULLS ON
 
+SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
 
-DROP TABLE IF EXISTS dbo.opAppliesFor
+DROP TABLE IF EXISTS begin dbo.opAppliesFor end
 CREATE TABLE [dbo].[AppliesFor](
 	[StudentID] [nvarchar](8) NULL,
 	[PosID] [nvarchar](50) NULL
