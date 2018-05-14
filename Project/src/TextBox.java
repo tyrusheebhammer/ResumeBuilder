@@ -7,6 +7,7 @@ public class TextBox {
 	private String title;
 	private int x, y, w, h;
 	private String entry = "";
+	private String modifiedEntry="";
 	private boolean isSecure;
 	private boolean isTextboxSelected = false;
 	private String consoleMessage;
@@ -24,7 +25,7 @@ public class TextBox {
 
 	}
 
-	public void create() {
+	public void draw() {
 		this.isSelected();
 		if (isTextboxSelected) {
 			p.stroke(255, 165, 0);
@@ -50,11 +51,9 @@ public class TextBox {
 		p.textAlign(PConstants.LEFT);
 		String toPrint = "";
 		if (isSecure) {
-			for (int i = 0; i < entry.length(); i++) {
-				toPrint = toPrint + '*';
-			}
+			toPrint = starString(modifiedEntry);
 		} else {
-			toPrint = entry;
+			toPrint = modifiedEntry;
 		}
 		p.text(toPrint, x - w / 2 + 10, y + h / 2 - 10);
 
@@ -76,16 +75,36 @@ public class TextBox {
 		this.isSelected();
 		if (isTextboxSelected) {
 			if (!(p.key == PConstants.ENTER || p.key == PConstants.RETURN || p.keyCode == PConstants.SHIFT)) {
-				if (entry.length() < 16 && p.key != PConstants.BACKSPACE) {
-					entry = entry + p.key;
-				}
-				if (entry.length() == 15 && p.key != PConstants.BACKSPACE) {
+				if (entry.length() == 100 && p.key != PConstants.BACKSPACE) {
 					consoleMessage = title;
 				}
+				if (p.textWidth(modifiedEntry+p.key)<=w-10 && p.key != PConstants.BACKSPACE) {
+					entry = entry + p.key;
+					modifiedEntry=modifiedEntry+p.key;
+				} else if (p.textWidth(modifiedEntry+p.key)>w-10 && p.key != PConstants.BACKSPACE) {
+					entry = entry + p.key;
+					int charLoss = 1;
+					while(p.textWidth(modifiedEntry.substring(charLoss,modifiedEntry.length())+p.key)>w-10) {
+						charLoss++;
+					}
+					modifiedEntry = modifiedEntry.substring(charLoss,modifiedEntry.length())+p.key;
+				}
+				
 				if (p.key == PConstants.BACKSPACE) {
 					consoleMessage = "";
 					if (entry.length() > 0) {
 						entry = entry.substring(0, entry.length() - 1);
+					}
+					if (modifiedEntry.length() > 0) {
+						modifiedEntry = modifiedEntry.substring(0, modifiedEntry.length() - 1);
+					}
+					if (!entry.equals(modifiedEntry)) {
+						try {
+						
+							modifiedEntry=entry.charAt(entry.length()-modifiedEntry.length()-1)+modifiedEntry;
+						} catch (StringIndexOutOfBoundsException s) {
+							//stop
+						}
 					}
 
 				}
@@ -95,6 +114,13 @@ public class TextBox {
 
 	}
 
+	public String starString(String s) {
+		String toReturn="";
+		for (int i = 0; i < s.length(); i++) {
+			toReturn = toReturn + '*';
+		}
+		return toReturn;
+	}
 	public String getEntry() {
 		return entry;
 	}

@@ -16,7 +16,7 @@ public class Button {
 		h = h_;
 	}
 
-	public void create() {
+	public void draw() {
 		p.fill(200);
 		p.rect(x - w / 2, y - h / 2, w, h);
 		p.fill(0);
