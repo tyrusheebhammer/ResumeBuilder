@@ -8,12 +8,31 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+if exists (SELECT * FROM sysobjects WHERE name = 'AddCourse') drop procedure [AddCourse]
+Go
+
 CREATE PROCEDURE [dbo].[AddCourse]
 	@CourseID varchar(50),
-	@Skill varchar(50)
+	@Subject varchar(50)
 AS
 BEGIN
-	INSERT INTO Course(CourseID, [Skill])
-	VALUES(@CourseID, @Skill);
+	If @CourseID is null or @CourseID = ''
+	BEGIN
+		PRINT 'ERROR: CourseID cannot be null or empty';
+		RETURN (1)
+	END
+	If @Subject is null or @Subject = ''
+	BEGIN
+		PRINT 'ERROR: Subject cannot be null or empty';
+		RETURN (2)
+	END
+	IF(SELECT COUNT(*) FROM Course 
+		Where [CourseID] = @CourseID) = 1
+	BEGIN
+		PRINT 'ERROR: Course Already Exists';
+		RETURN (3)
+	END
+	INSERT INTO Course(CourseID, [Subject])
+	VALUES(@CourseID, @Subject);
 END
 GO
