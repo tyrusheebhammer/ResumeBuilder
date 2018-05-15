@@ -57,22 +57,19 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 		
 		
 	}
-	public boolean addPosition(String CompanyName, Double Salary, String Name, String Location, String StartDate, String Description) throws ParseException{
+	public boolean addPosition(Float Salary, String Name, String Location, String Description) throws ParseException{
 		PreparedStatement pStmt;
 		SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
 		Date mDate = null;
 		try {
-			if(StartDate != null){
-				 mDate = (Date) sdf.parse(StartDate);				
-			}
-			pStmt = dbs.getConnection().prepareCall("{? = call AddPosition(?, ?, ?, ?, ?, ?)}");
-			pStmt.setString(1, CompanyName);
-			pStmt.setDouble(2, Salary);
-			pStmt.setString(3, Name);
-			pStmt.setString(4, Location);
-			pStmt.setDate(5, mDate);
-			pStmt.setString(6, Description);
-			pStmt.executeUpdate();
+			pStmt = dbs.getConnection().prepareCall("{call AddPosition(?, ?, ?, ?)}");
+			pStmt.setFloat(1, Salary);
+			pStmt.setString(2, Name);
+			pStmt.setString(3, Location);
+			pStmt.setString(4, Description);
+			int rs = pStmt.executeUpdate();
+			
+			System.out.println(rs);
 			dbs.getConnection().commit();
 			return true;
 		} catch (SQLException e) {

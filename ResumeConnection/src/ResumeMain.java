@@ -30,8 +30,8 @@ public class ResumeMain {
 		//This builds the company table
 		for(int i = 1; i < 101; i++){
 			Integer temp = i;
-			Double temp2 = (double) i;
-			if(!builder.addPosition("TestCompany"+i, temp2, "TestComapny"+i, "Location"+i, null, "This is Description 1")){System.out.println("Utter Failure");}	
+			Float temp2 = (float) 1.25;
+			if(!builder.addPosition(temp2, "TestPos"+i, "Location"+i, "This is Description 1")){System.out.println("Utter Failure");}	
 		}
 		System.out.println("Done");
 		
