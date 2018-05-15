@@ -23,7 +23,7 @@ BEGIN
 END
 
 --***************************************************************************************************
-
+Go
 if exists (SELECT * FROM sysobjects WHERE name = 'AddCourse') drop procedure [AddCourse]
 Go
 
@@ -271,6 +271,8 @@ BEGIN
 	VALUES(@SkillID, @CourseID);
 END
 --***************************************************************************************************
+
+Go
 if exists (SELECT * FROM sysobjects WHERE name = 'AddPosition')drop procedure [AddPosition]
 GO
 Create PROCEDURE [dbo].[AddPosition]
