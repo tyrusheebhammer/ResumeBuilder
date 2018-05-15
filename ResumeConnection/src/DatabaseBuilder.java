@@ -4,18 +4,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 
 public class DatabaseBuilder {
-	
+	ArrayList<String> degrees = new ArrayList<>();
+	ArrayList<String> skills = new ArrayList<>();
+	private static final String[] COURSESKILLTITLES = {"AS","BE","BIO","BMTH","CE","CHE","CHEM","CSSE","ECE","EM","EMGT",
+								  "ENGD", "EP", "ES", "GE", "JP", "SP", "GS", "IA", "RH", "SV", "MA",
+								  "ME","MS","OE","PH"};
+	private static final String[] COURSESKILLNAMES = {};
+	HashMap<String, String> titleToName;
 	private DatabaseConnectionService dbs;	
 public DatabaseBuilder(DatabaseConnectionService dbs){
 	
 	this.dbs = dbs;
+	this.titleToName = new HashMap<>();
+	for(int i = 0; i < COURSESKILLNAMES.length; i++) {
+		this.titleToName.put(COURSESKILLTITLES[i], COURSESKILLNAMES[i]);
+	}
 }
 	
 	
@@ -44,17 +55,30 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 			String address, int phone, String password) throws SQLException{
 				CallableStatement Cstmt = dbs.getConnection().prepareCall("{call AddStudent(?, ?, ?, ?, ?, ?, ?)}");
 				Cstmt.setString(1, studentID);
-				Cstmt.setString(1, firstName);
-				Cstmt.setString(1, middleInitial);
-				Cstmt.setString(1, lastName);
-				Cstmt.setString(1, address);
-				Cstmt.setInt(1, phone);
-				Cstmt.setString(1, password);
+				Cstmt.setString(2, firstName);
+				Cstmt.setString(3, middleInitial);
+				Cstmt.setString(4, lastName);
+				Cstmt.setString(5, address);
+				Cstmt.setInt(6, phone);
+				Cstmt.setString(7, password);
 				Cstmt.executeUpdate();
 				return true;
 	}
-	public void addCourse(){
-		
+	
+	public void AddSkill(String)
+	public void addCourse(String CourseID, String Subject){
+		PreparedStatement pStmt;
+		try {
+			this.degrees.add(CourseID);
+			pStmt = dbs.getConnection().prepareStatement("{call AddCourse(?,?)}");
+			pStmt.setString(1, CourseID);
+			pStmt.setString(2, Subject);
+			int rs = pStmt.executeUpdate();
+			System.out.print(rs);
+			dbs.getConnection().commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	public boolean addPosition(Float Salary, String Name, String Location, String Description, String Company) throws ParseException{
@@ -70,7 +94,7 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 			pStmt.setString(5, Company);
 			int rs = pStmt.executeUpdate();
 			
-			System.out.println(rs);
+			System.out.print(rs);
 			dbs.getConnection().commit();
 			return true;
 		} catch (SQLException e) {
@@ -78,21 +102,19 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 			return false;
 		}
 	}
-	public boolean addCompany(String Name){
+	public void addDegree(String studentID, String degreeName, int gradYear, String degreeType, String field) {
 		PreparedStatement pStmt;
 		try {
-			pStmt = dbs.getConnection().prepareCall("{call AddCompany(?)}");
-			pStmt.setString(1, Name);
-			pStmt.executeUpdate();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-	}
-	public void addCredential(){
-		
+			pStmt = dbs.getConnection().prepareStatement("{call AddDegree(?,?,?,?,?)}");
+			pStmt.setString(1, studentID);
+			pStmt.setString(2, degreeName);
+			pStmt.setInt(3, gradYear);
+			pStmt.setString(4, degreeType);
+			pStmt.setString(5, field);
+			int rs = pStmt.executeUpdate();
+			System.out.print(rs);
+			dbs.getConnection().commit();
+		}catch(SQLException e) {}
 	}
 	
 }

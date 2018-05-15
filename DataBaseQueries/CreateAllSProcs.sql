@@ -36,6 +36,46 @@ END
 --***************************************************************************************************
 GO
 
+if exists (SELECT * FROM sysobjects WHERE name = 'AddSkill') drop procedure [AddSkill]
+Go
+
+Create Procedure AddSkill(
+	@SkillID nvarchar(50),
+	@Subject nvarchar(50),
+	@Description nvarchar(max)
+)
+As
+	If @SkillID is null or @SkillID = ''
+	BEGIN
+		PRINT 'ERROR: SkillID cannot be null or empty';
+		RETURN (1)
+	END
+
+	If @Subject is null or @Subject = ''
+	BEGIN
+		PRINT 'ERROR: subject cannot be null or empty';
+		RETURN (2)
+	END
+
+	If @Description is null or @Description = ''
+	BEGIN
+		PRINT 'ERROR: description cannot be null or empty';
+		RETURN (3)
+	END
+	IF(SELECT COUNT(*) FROM Skill 
+		Where [SkillID] = @SkillID) = 1
+	BEGIN
+		PRINT 'ERROR: Skill Already Exists';
+		RETURN (4)
+	END
+	Insert Into Skill(SkillID, Subject, Description)
+		Values(@SkillID,@Subject,@Description)
+	return (0)
+
+--***************************************************************************************************
+GO
+
+
 if exists (SELECT * FROM sysobjects WHERE name = 'AddDegreesp') drop procedure [AddDegreesp]
 Go
 
@@ -248,6 +288,19 @@ BEGIN
 		PRINT 'ERROR: Course already offers this skill';
 		RETURN (3)
 	END
+	IF(SELECT COUNT(*) FROM Skill 
+		Where [SkillID] = @SkillID) = 0
+	BEGIN
+		PRINT 'Skill Does not exist';
+		RETURN (4)
+	END
+
+	IF(SELECT COUNT(*) FROM Course 
+		Where [CourseID] = @CourseID) = 0
+	BEGIN
+		PRINT 'ERROR: Course does not exist';
+		RETURN (5)
+	END
 	INSERT INTO GivesSkill(SkillID, CourseID)
 	VALUES(@SkillID, @CourseID);
 END
@@ -343,7 +396,7 @@ Create PROCEDURE [dbo].[AddStudent]
 	@MInit nvarchar(5) = null,
 	@LastName nvarchar(50), 
 	@addr nvarchar(100) = null,
-	@phone int = null,
+	@phone numeric = null,
 	@pass nvarchar(50)
 AS
 BEGIN
@@ -351,28 +404,24 @@ BEGIN
 	IF @FirstName is null or @FirstName = ''
 	BEGIN
 		PRINT 'ERROR: Experience Name cannot be null or empty';
-		Rollback transaction
 		RETURN (1)
 	END
 	
 	IF @sid is null or @sid = ''
 	BEGIN
 		PRINT 'ERROR: StudentID cannot be null or empty';
-		Rollback transaction
 		RETURN (2)
 	END
 	
 	IF @LastName is null or @LastName = ''
 	BEGIN
 		PRINT 'ERROR: Last name cannot be null or empty';
-		Rollback transaction
 		RETURN (3)
 	END
 	
 	IF @pass is null or @pass = ''
 	Begin
 		Print 'ERROR: password cannot be null'
-		Rollback transaction
 		Return (4)
 	End
 
@@ -381,7 +430,6 @@ BEGIN
 	IF (Select Count(*) From student where @sid = StudentID) = 1
 	Begin
 		Print 'ERROR: Student alrready exists'
-		Rollback transaction
 		Return (5)
 	End
 
