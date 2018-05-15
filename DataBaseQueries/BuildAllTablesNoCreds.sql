@@ -29,8 +29,6 @@ if exists (SELECT * FROM sysobjects WHERE name = 'Course') drop Table [Course]
 
 if exists (SELECT * FROM sysobjects WHERE name = 'Skill')drop Table [Skill]
 
-
-
 Go
 
 SET QUOTED_IDENTIFIER ON
