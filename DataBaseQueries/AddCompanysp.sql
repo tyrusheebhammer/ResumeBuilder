@@ -10,18 +10,12 @@ if exists (SELECT * FROM sysobjects WHERE name = 'AddCompany')drop procedure [Ad
 Go
 
 CREATE PROCEDURE [AddCompany]
-	@CID varchar(50),
 	@Name varchar(50)
 AS
 BEGIN
-	IF @CID is null or @CID = ''
-	BEGIN
-		PRINT 'ERROR: Company ID cannot be null or empty';
-		RETURN (1)
-	END
 	IF @Name is null or @Name = ''
 	BEGIN
-		PRINT 'ERROR: Company ID cannot be null or empty';
+		PRINT 'ERROR: Name cannot be null or empty';
 		RETURN (2)
 	END
 	IF(SELECT COUNT(*) FROM Company 
@@ -30,6 +24,6 @@ BEGIN
 		PRINT 'ERROR: Company Already Exists';
 		RETURN (3)
 	END
-	INSERT INTO Company(CID, [Name])
-	VALUES(@CID, @Name);
+	INSERT INTO Company([Name])
+	VALUES(@Name);
 END

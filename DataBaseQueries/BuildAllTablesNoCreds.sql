@@ -53,8 +53,7 @@ Go
 
 
 CREATE TABLE [dbo].[Company](
-	[CID] int Identity(1,1) primary key,
-	[Name] [nvarchar](50) NOT NULL
+	[Name] [nvarchar](50) Primary Key
 )
 GO
 
@@ -146,9 +145,9 @@ Create Table GivesSkill(
 Go
 
 CREATE TABLE [dbo].[Offers](
-	[CID] int,
+	[Name] nvarchar(50),
 	[PosID] int 
-	Foreign Key(CID) references Company(CID) ON DELETE CASCADE ON UPDATE CASCADE ,
+	Foreign Key([Name]) references Company([Name]) ON DELETE CASCADE ON UPDATE CASCADE ,
 	Foreign Key(PosID) references Position(PosID) ON DELETE CASCADE ON UPDATE CASCADE 
 )
 Go
