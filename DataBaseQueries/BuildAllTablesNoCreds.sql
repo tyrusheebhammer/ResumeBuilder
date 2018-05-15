@@ -66,10 +66,9 @@ Create Table Skill(
 
 Create Table Position(
 	PosID int Identity(1,1) primary key,
-	Salary money,
+	Salary float,
 	Name nvarchar(50) not null,
 	Location nvarchar(100),
-	StartDate date not null, 
 	Description nvarchar(max) not null
 )
 

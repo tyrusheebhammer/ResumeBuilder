@@ -271,69 +271,45 @@ BEGIN
 	VALUES(@SkillID, @CourseID);
 END
 --***************************************************************************************************
+Go
+if exists (SELECT * FROM sysobjects WHERE name = 'AddOffers')drop procedure [AddOffers]
+GO
+Create PROCEDURE [dbo].[AddOffers]
+	@CompanyName varchar(50),
+	@PosID int
+As
 
+	Insert Into Offers(Name, PosID)
+		Values(@CompanyName, @PosID)
+	
 Go
 if exists (SELECT * FROM sysobjects WHERE name = 'AddPosition')drop procedure [AddPosition]
 GO
 Create PROCEDURE [dbo].[AddPosition]
-	@CompanyName varchar(50),
-	@Salary Money null,
+	@Salary float null,
 	@Name varchar(50),
 	@Location varchar(50),
-	@StartDate date = null,
-	@Description varchar(50) = null
+	@Description varchar(50) null
 	As
 	IF @Name is null or @Name = ''
 
-Begin try
-Begin transaction
-	BEGIN
-		PRINT 'ERROR: Position name cannot be null or empty';
-		Rollback Transaction
-		RETURN (1)
-	END
+--Begin try
 	IF @Location is null or @Location = ''
 	BEGIN
 		PRINT 'ERROR: Position Location cannot be null or empty';
 		Rollback Transaction
 		RETURN (2)
 	END
-	IF @CompanyName is null or @CompanyName = ''
-	Begin
-		PRINT 'ERROR: Company ID cannot be null or empty';
-		Rollback Transaction
-		RETURN (3)
-	End
-	IF (Select Count(*) From company where @CompanyName = Name) = 0
-	Begin
-		Print 'ERROR: Company does not exist'
-		Rollback transaction
-		Return (4)
-	End
-	
-	Declare @PosIDT table (
-		PosID int)
 
-	Begin 
-		INSERT INTO Position(Salary, [Name], [Location], [StartDate], [Description])
-	
-		Output Inserted.PosID
-			Into @PosIDT
-		VALUES(@Salary, @Name, @Location, @StartDate, @Description);
-	End
-
-	Declare @PosID int
-	set @PosID = (select PosID from @PosIDT)
-
-	Insert Into Offers(Name, PosID)
-	Values(@CompanyName, @PosID)
-	Commit Transaction
-End Try
-Begin Catch
-	Print 'Unknown Error'
-	Return (5)
-	Rollback Transaction
-End Catch
+	INSERT INTO Position(Salary, [Name], [Location], [Description])
+	VALUES(@Salary, @Name, @Location, @Description);
+	Return (0)
+--End Try
+--Begin Catch
+--	Print 'Unknown Error'
+--	Return (5)
+--	Rollback Transaction
+--End Catch
 --***************************************************************************************************
 Go
 if exists (SELECT * FROM sysobjects WHERE name = 'AddRequires') drop procedure [AddRequires]
@@ -448,7 +424,6 @@ AS
 PRINT 'in the right sp'
 --Declaring tables to be joined later 
 Declare @SalaryTable table(PositionID int, PositionName nvarchar(255), PositionDescription nvarchar(255))
-Declare @StartDateTable table(PositionID int, PositionName nvarchar(255), PositionDescription nvarchar(255))
 Declare @LocationTable table(PositionID int, PositionName nvarchar(255), PositionDescription nvarchar(255))
 Declare @CompanyTable table(PositionID int, PositionName nvarchar(255), PositionDescription nvarchar(255))
 Declare @QualifiedTable table(PositionID int, PositionName nvarchar(255), PositionDescription nvarchar(255))
@@ -514,32 +489,6 @@ IF @salary  is not null
 		
 	END 
 PRINT '4'
---Filtering SatatrtDate
-	IF (@startDate is not null)	
-	BEGIN
-	if(@TodaysDate < @startDate)
-		Print 'Invalid StartDate'
-		Return (1)
-
-	
-		PRINT 'start date  case'
-		INSERT Into @startDateTable
-			SELECT Position.PosID, Position.Name, Position.Description
-				FROM Position
-				WHERE Position.startDate = @startDate
-
-		Insert Into @TempTable
-			Select* From @ReturnTable	
-			INTERSECT 
-			Select* From @startDateTable;
-			
-		DELETE FROM @ReturnTable
-		INSERT INTO @ReturnTable
-			Select* From @TempTable
-		
-		DELETE FROM @TempTable
-	END 
-PRINT '5'
 --Filtering location 
 IF (@location is not null) 
 
@@ -589,7 +538,7 @@ PRINT '6'
 	END
 PRINT '7'
 
-	SELECT Position.Name 'Position Name', Position.Description, Position.Salary, Position.StartDate 'Start Date', 
+	SELECT Position.Name 'Position Name', Position.Description, Position.Salary, 
 		   Position.Location, Company.Name 'Company Name'
 		FROM Position, @ReturnTable, Offers, Company
 		Where Position.PosID = PositionID AND Position.PosID = Offers.PosID AND Company.Name = Offers.Name
