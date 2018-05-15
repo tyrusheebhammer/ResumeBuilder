@@ -57,16 +57,17 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 		
 		
 	}
-	public boolean addPosition(Float Salary, String Name, String Location, String Description) throws ParseException{
+	public boolean addPosition(Float Salary, String Name, String Location, String Description, String Company) throws ParseException{
 		PreparedStatement pStmt;
 		SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
 		Date mDate = null;
 		try {
-			pStmt = dbs.getConnection().prepareCall("{call AddPosition(?, ?, ?, ?)}");
+			pStmt = dbs.getConnection().prepareCall("{call AddPosition(?, ?, ?, ?, ?)}");
 			pStmt.setFloat(1, Salary);
 			pStmt.setString(2, Name);
 			pStmt.setString(3, Location);
 			pStmt.setString(4, Description);
+			pStmt.setString(5, Company);
 			int rs = pStmt.executeUpdate();
 			
 			System.out.println(rs);

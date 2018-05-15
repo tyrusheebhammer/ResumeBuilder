@@ -21,8 +21,6 @@ if exists (SELECT * FROM sysobjects WHERE name = 'AppliesFor')drop table [Applie
 
 if exists (SELECT * FROM sysobjects WHERE name = 'Experience')drop table [Experience]
 
-if exists (SELECT * FROM sysobjects WHERE name = 'Offers') drop table [Offers]
-
 if exists (SELECT * FROM sysobjects WHERE name = 'Student') drop table [Student]
 
 if exists (SELECT * FROM sysobjects WHERE name = 'Position') drop table [Position]
@@ -31,7 +29,6 @@ if exists (SELECT * FROM sysobjects WHERE name = 'Course') drop Table [Course]
 
 if exists (SELECT * FROM sysobjects WHERE name = 'Skill')drop Table [Skill]
 
-if exists (SELECT * FROM sysobjects WHERE name = 'Company') drop table [Company]
 
 
 Go
@@ -52,10 +49,10 @@ CREATE TABLE [dbo].[Student](
 Go
 
 
-CREATE TABLE [dbo].[Company](
-	[Name] [nvarchar](50) Primary Key
-)
-GO
+--CREATE TABLE [dbo].[Company](
+--	[Name] [nvarchar](50) Primary Key
+--)
+--GO
 
 Create Table Skill(
 	SkillID int Identity(1,1) primary key,
@@ -69,7 +66,8 @@ Create Table Position(
 	Salary float,
 	Name nvarchar(50) not null,
 	Location nvarchar(100),
-	Description nvarchar(max) not null
+	Description nvarchar(max) not null,
+	Company nvarchar(50)
 )
 
 Go
@@ -143,13 +141,6 @@ Create Table GivesSkill(
 )
 Go
 
-CREATE TABLE [dbo].[Offers](
-	[Name] nvarchar(50),
-	[PosID] int 
-	Foreign Key([Name]) references Company([Name]) ON DELETE CASCADE ON UPDATE CASCADE ,
-	Foreign Key(PosID) references Position(PosID) ON DELETE CASCADE ON UPDATE CASCADE 
-)
-Go
 
 CREATE TABLE [dbo].[Requires](
 	[SkillID] int,

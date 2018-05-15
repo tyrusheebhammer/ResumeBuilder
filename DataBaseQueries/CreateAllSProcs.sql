@@ -3,25 +3,6 @@ Go
 if exists (SELECT * FROM sysobjects WHERE name = 'AddCompany')drop procedure [AddCompany]
 Go
 
-CREATE PROCEDURE [AddCompany]
-	@Name varchar(50)
-AS
-BEGIN
-	IF @Name is null or @Name = ''
-	BEGIN
-		PRINT 'ERROR: Name cannot be null or empty';
-		RETURN (2)
-	END
-	IF(SELECT COUNT(*) FROM Company 
-		Where [Name] = @Name) = 1
-	BEGIN
-		PRINT 'ERROR: Company Already Exists';
-		RETURN (3)
-	END
-	INSERT INTO Company([Name])
-	VALUES(@Name);
-END
-
 --***************************************************************************************************
 Go
 if exists (SELECT * FROM sysobjects WHERE name = 'AddCourse') drop procedure [AddCourse]
@@ -289,7 +270,8 @@ Create PROCEDURE [dbo].[AddPosition]
 	@Salary float null,
 	@Name varchar(50),
 	@Location varchar(50),
-	@Description varchar(50) null
+	@Description varchar(50) null,
+	@Company varchar(50)
 	As
 	IF @Name is null or @Name = ''
 
@@ -301,8 +283,8 @@ Create PROCEDURE [dbo].[AddPosition]
 		RETURN (2)
 	END
 
-	INSERT INTO Position(Salary, [Name], [Location], [Description])
-	VALUES(@Salary, @Name, @Location, @Description);
+	INSERT INTO Position(Salary, [Name], [Location], [Description], [Company])
+	VALUES(@Salary, @Name, @Location, @Description, @Company);
 	Return (0)
 --End Try
 --Begin Catch
@@ -519,11 +501,8 @@ PRINT '6'
 		PRINT 'company  case'
 		INSERT Into @CompanyTable
 			SELECT Position.PosID, Position.Name, Position.Description
-				FROM Offers JOIN Position
-				on Offers.PosID = Position.PosID 
-				JOIN Company
-				on Offers.Name = Company.Name
-				WHERE @company = Company.Name
+				From Position
+				Where [Company] = @company
 
 		Insert Into @TempTable
 			Select* From @ReturnTable	

@@ -31,7 +31,7 @@ public class ResumeMain {
 		for(int i = 1; i < 101; i++){
 			Integer temp = i;
 			Float temp2 = (float) 1.25;
-			if(!builder.addPosition(temp2, "TestPos"+i, "Location"+i, "This is Description 1")){System.out.println("Utter Failure");}	
+			if(!builder.addPosition(temp2, "TestPos"+i, "Location"+i, "This is Description 1", "Google")){System.out.println("Utter Failure");}	
 		}
 		System.out.println("Done");
 		
