@@ -67,7 +67,7 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 	public void AddPosition(Double salary, String name, String location, String description, String company) {
 		PreparedStatement pStmt;
 		try {
-			pStmt = dbs.getConnection().prepareStatement("{call AddCourse(?, ?, ?, ?, ?)}");
+			pStmt = dbs.getConnection().prepareStatement("{call AddCourse(?, ?, ?, ?, ?0)}");
 			pStmt.setDouble(1, salary);
 			pStmt.setString(2, name);
 			pStmt.setString(3, location);
@@ -110,7 +110,7 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 		}
 		
 	}
-	public boolean addPosition(Float Salary, String Name, String Location, String Description, String Company) throws ParseException{
+	public ResultSet addPosition(Float Salary, String Name, String Location, String Description, String Company) throws ParseException{
 		PreparedStatement pStmt;
 		SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
 		Date mDate = null;
@@ -122,13 +122,12 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 			pStmt.setString(4, Description);
 			pStmt.setString(5, Company);
 			int rs = pStmt.executeUpdate();
-			
 			System.out.print(rs);
 			dbs.getConnection().commit();
-			return true;
+			return pStmt.getResultSet();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		}
 	}
 	public void addDegree(String studentID, String degreeName, int gradYear, String degreeType, String field) {
@@ -145,5 +144,19 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 			dbs.getConnection().commit();
 		}catch(SQLException e) {}
 	}
-	
+	public void addRequires(int posID, float salary, String name, String Location, String Description, String Company) {
+		PreparedStatement pStmt;
+		try {
+			pStmt = dbs.getConnection().prepareStatement("{call AddDegree(?,?,?,?,?)}");
+			pStmt.setInt(1, posID);
+			pStmt.setFloat(2, salary);
+			pStmt.setString(3, name);
+			pStmt.setString(4, Location);
+			pStmt.setString(5, Description);
+			pStmt.setString(6, Company);
+			int rs = pStmt.executeUpdate();
+			System.out.print(rs);
+			dbs.getConnection().commit();
+		}catch(SQLException e) {}
+	}
 }

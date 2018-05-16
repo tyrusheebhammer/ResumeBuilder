@@ -305,17 +305,7 @@ BEGIN
 	VALUES(@SkillID, @CourseID);
 END
 --***************************************************************************************************
-Go
-if exists (SELECT * FROM sysobjects WHERE name = 'AddOffers')drop procedure [AddOffers]
-GO
-Create PROCEDURE [dbo].[AddOffers]
-	@CompanyName varchar(50),
-	@PosID int
-As
 
-	Insert Into Offers(Name, PosID)
-		Values(@CompanyName, @PosID)
-	
 Go
 if exists (SELECT * FROM sysobjects WHERE name = 'AddPosition')drop procedure [AddPosition]
 GO
@@ -446,7 +436,6 @@ Go
 CREATE PROCEDURE [dbo].[FilterPositions] 
 	@sID nvarchar(8),
 	@salary money null,
-	@startDate date null,
 	@location nvarchar(255) null,
 	@company nvarchar(255) null,
 	@qualified bit null
@@ -565,10 +554,10 @@ PRINT '6'
 	END
 PRINT '7'
 
-	SELECT Position.Name 'Position Name', Position.Description, Position.Salary, 
-		   Position.Location, Company.Name 'Company Name'
-		FROM Position, @ReturnTable, Offers, Company
-		Where Position.PosID = PositionID AND Position.PosID = Offers.PosID AND Company.Name = Offers.Name
+	SELECT Position.Name 'Position Name', [Description], Salary, 
+		 [Location], [Company]
+		FROM Position, @ReturnTable
+		Where Position.PosID = PositionID
 Return(0)
 
 --***************************************************************************************************
