@@ -23,10 +23,10 @@ public class DatabaseBuilder {
 public DatabaseBuilder(DatabaseConnectionService dbs){
 	
 	this.dbs = dbs;
-	this.titleToName = new HashMap<>();
-	for(int i = 0; i < COURSESKILLNAMES.length; i++) {
-		this.titleToName.put(COURSESKILLTITLES[i], COURSESKILLNAMES[i]);
-	}
+//	this.titleToName = new HashMap<>();
+//	for(int i = 0; i < COURSESKILLNAMES.length; i++) {
+//		this.titleToName.put(COURSESKILLTITLES[i], COURSESKILLNAMES[i]);
+//	}
 }
 	
 	
@@ -64,12 +64,41 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 				Cstmt.executeUpdate();
 				return true;
 	}
+	public void AddPosition(Double salary, String name, String location, String description, String company) {
+		PreparedStatement pStmt;
+		try {
+			pStmt = dbs.getConnection().prepareStatement("{call AddCourse(?, ?, ?, ?, ?)}");
+			pStmt.setDouble(1, salary);
+			pStmt.setString(2, name);
+			pStmt.setString(3, location);
+			pStmt.setString(4, description);
+			pStmt.setString(5, company);
+			int rs = pStmt.executeUpdate();
+			System.out.print(rs);
+			dbs.getConnection().commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
-	public void AddSkill(String)
+	public void AddSkill(String SkillID, String Subject, String Description) {
+		PreparedStatement pStmt;
+		try {
+			pStmt = dbs.getConnection().prepareStatement("{call AddSkill(?, ?, ?)}");
+			pStmt.setString(1, SkillID);
+			pStmt.setString(2, Subject);
+			pStmt.setString(3, Description);
+			int rs = pStmt.executeUpdate();
+			System.out.print(rs);
+			dbs.getConnection().commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	public void addCourse(String CourseID, String Subject){
 		PreparedStatement pStmt;
 		try {
-			this.degrees.add(CourseID);
 			pStmt = dbs.getConnection().prepareStatement("{call AddCourse(?,?)}");
 			pStmt.setString(1, CourseID);
 			pStmt.setString(2, Subject);
