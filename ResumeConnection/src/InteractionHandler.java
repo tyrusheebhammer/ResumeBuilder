@@ -25,34 +25,34 @@ public class InteractionHandler {
 	 * @return
 	 */
 	
-	public ArrayList<ArrayList<String>> getQualifiedPositions(String studentID){
-		
-		//Initialize local variables
-		ArrayList<ArrayList<String>> returnSet = new ArrayList<ArrayList<String>>();
-		PreparedStatement pStmt = null; 
-		ResultSet rs = null;
-		//Querying the database
-		try {
-			pStmt = dbs.getConnection().prepareStatement("{call GetPositionByStudentSkills(?)}");
-			pStmt.setString(1, studentID);
-			rs= pStmt.executeQuery();
-			
-			//Adding the result set to the nested arraylist 
-			while(rs.next()){
-				System.out.println(rs.getString("Name"));
-				ArrayList<String> currentRow = new ArrayList<>(); 
-				currentRow.add(rs.getString("Name"));
-				currentRow.add(rs.getString("Description"));
-				returnSet.add(currentRow);
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return returnSet;
-		
-	}
+//	public ArrayList<ArrayList<String>> getQualifiedPositions(String studentID){
+//		
+//		//Initialize local variables
+//		ArrayList<ArrayList<String>> returnSet = new ArrayList<ArrayList<String>>();
+//		PreparedStatement pStmt = null; 
+//		ResultSet rs = null;
+//		//Querying the database
+//		try {
+//			pStmt = dbs.getConnection().prepareStatement("{call GetPositionByStudentSkills(?)}");
+//			pStmt.setString(1, studentID);
+//			rs= pStmt.executeQuery();
+//			
+//			//Adding the result set to the nested arraylist 
+//			while(rs.next()){
+//				System.out.println(rs.getString("Name"));
+//				ArrayList<String> currentRow = new ArrayList<>(); 
+//				currentRow.add(rs.getString("Name"));
+//				currentRow.add(rs.getString("Description"));
+//				returnSet.add(currentRow);
+//			}
+//			
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return returnSet;
+//		
+//	}
 	
 	/**
 	 * This method takes the student id but the remaining fields can be null and then will filter
@@ -112,7 +112,80 @@ public class InteractionHandler {
 		
 	}
 	
+	public ResultSet getDegree(int studentID) {
+		PreparedStatement pStmt;
+		try {
+			pStmt = dbs.getConnection().prepareStatement("{call getDegreeByStudent(?)}");
+			pStmt.setInt(1, studentID);
+			int rs = pStmt.executeUpdate();
+			System.out.println(rs);
+			dbs.getConnection().commit();
+			return pStmt.getResultSet();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return null;}
+	}
 	
+	public ResultSet getExperience(int studentID) {
+		PreparedStatement pStmt;
+		try {
+			pStmt = dbs.getConnection().prepareStatement("{call getExperienceByStudent(?)}");
+			pStmt.setInt(1, studentID);
+			int rs = pStmt.executeUpdate();
+			System.out.println(rs);
+			dbs.getConnection().commit();
+			return pStmt.getResultSet();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return null;}
+	}
+	
+	public ResultSet getSkills(int studentID) {
+		PreparedStatement pStmt;
+		try {
+			pStmt = dbs.getConnection().prepareStatement("{call getSkillsByStudent(?)}");
+			pStmt.setInt(1, studentID);
+			int rs = pStmt.executeUpdate();
+			System.out.println(rs);
+			dbs.getConnection().commit();
+			return pStmt.getResultSet();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return null;}
+	}
+	
+	public ResultSet getStudent(int studentID) {
+		PreparedStatement pStmt;
+		try {
+			pStmt = dbs.getConnection().prepareStatement("{call getStudentByID(?)}");
+			pStmt.setInt(1, studentID);
+			int rs = pStmt.executeUpdate();
+			System.out.println(rs);
+			dbs.getConnection().commit();
+			return pStmt.getResultSet();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return null;}
+	}
+	
+	public ResultSet getPassword(int studentID) {
+		PreparedStatement pStmt;
+		try {
+			pStmt = dbs.getConnection().prepareStatement("{call getStudentPassword(?)}");
+			pStmt.setInt(1, studentID);
+			int rs = pStmt.executeUpdate();
+			System.out.println(rs);
+			dbs.getConnection().commit();
+			return pStmt.getResultSet();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return null;}
+	}
 
 	
 }

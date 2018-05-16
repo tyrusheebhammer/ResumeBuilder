@@ -50,7 +50,7 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 		
 		return " ";
 	}
-
+	 
 	public boolean addStudent(String studentID, String firstName, String middleInitial, String lastName, 
 			String address, int phone, String password) throws SQLException{
 				CallableStatement Cstmt = dbs.getConnection().prepareCall("{call AddStudent(?, ?, ?, ?, ?, ?, ?)}");
@@ -67,7 +67,7 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 	public void AddPosition(Double salary, String name, String location, String description, String company) {
 		PreparedStatement pStmt;
 		try {
-			pStmt = dbs.getConnection().prepareStatement("{call AddCourse(?, ?, ?, ?, ?0)}");
+			pStmt = dbs.getConnection().prepareStatement("{call AddPosition(?, ?, ?, ?, ?)}");
 			pStmt.setDouble(1, salary);
 			pStmt.setString(2, name);
 			pStmt.setString(3, location);
@@ -110,7 +110,7 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 		}
 		
 	}
-	public ResultSet addPosition(Float Salary, String Name, String Location, String Description, String Company) throws ParseException{
+	public ResultSet addPosition(float Salary, String Name, String Location, String Description, String Company) throws ParseException{
 		PreparedStatement pStmt;
 		SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
 		Date mDate = null;
@@ -122,9 +122,12 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 			pStmt.setString(4, Description);
 			pStmt.setString(5, Company);
 			int rs = pStmt.executeUpdate();
+			ResultSet returnSet = pStmt.getResultSet();
 			System.out.print(rs);
+			while(pStmt.getMoreResults()) {pStmt.getResultSet();}
 			dbs.getConnection().commit();
-			return pStmt.getResultSet();
+			System.out.println();
+			return returnSet;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -141,13 +144,14 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 			pStmt.setString(5, field);
 			int rs = pStmt.executeUpdate();
 			System.out.print(rs);
+			
 			dbs.getConnection().commit();
-		}catch(SQLException e) {}
+		}catch(SQLException e) {e.printStackTrace();}
 	}
 	public void addRequires(int posID, float salary, String name, String Location, String Description, String Company) {
 		PreparedStatement pStmt;
 		try {
-			pStmt = dbs.getConnection().prepareStatement("{call AddDegree(?,?,?,?,?)}");
+			pStmt = dbs.getConnection().prepareStatement("{call AddRequires(?,?,?,?,?)}");
 			pStmt.setInt(1, posID);
 			pStmt.setFloat(2, salary);
 			pStmt.setString(3, name);
@@ -157,6 +161,9 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 			int rs = pStmt.executeUpdate();
 			System.out.print(rs);
 			dbs.getConnection().commit();
-		}catch(SQLException e) {}
+		}catch(SQLException e) {e.printStackTrace();}
 	}
+	
+	
+	
 }

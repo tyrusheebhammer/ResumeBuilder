@@ -76,10 +76,10 @@ As
 GO
 
 
-if exists (SELECT * FROM sysobjects WHERE name = 'AddDegreesp') drop procedure [AddDegreesp]
+if exists (SELECT * FROM sysobjects WHERE name = 'AddDegree') drop procedure [AddDegree]
 Go
 
-Create Procedure dbo.AddDegreesp
+Create Procedure dbo.AddDegree
 (	@StudentID nvarchar(8),
 	@Name nvarchar(50),
 	@GradYear int,
@@ -171,10 +171,10 @@ GO
 --***************************************************************************************************
 GO
 
-if exists (SELECT * FROM sysobjects WHERE name = 'AddExperiencesp') drop procedure [AddExperiencesp]
+if exists (SELECT * FROM sysobjects WHERE name = 'AddExperience') drop procedure [AddExperience]
 Go
 
-CREATE PROCEDURE [dbo].[AddExperiencesp]
+CREATE PROCEDURE [dbo].[AddExperience]
 (	@StudentID nvarchar(8),
 	@Name nvarchar(50),
 	@Description nvarchar(max),
@@ -316,9 +316,8 @@ Create PROCEDURE [dbo].[AddPosition]
 	@Description varchar(50) null,
 	@Company varchar(50)
 	As
-	IF @Name is null or @Name = ''
-
 --Begin try
+Begin Transaction
 	IF @Location is null or @Location = ''
 	BEGIN
 		PRINT 'ERROR: Position Location cannot be null or empty';
@@ -326,9 +325,15 @@ Create PROCEDURE [dbo].[AddPosition]
 		RETURN (2)
 	END
 
+	Declare @PosTable table(
+		PosID int
+	)
 	INSERT INTO Position(Salary, [Name], [Location], [Description], [Company])
+	OUTPUT Inserted.PosID into @PosTable
 	VALUES(@Salary, @Name, @Location, @Description, @Company);
-	Return (0)
+	
+	Select PosID From @PosTable
+	Commit Transaction
 --End Try
 --Begin Catch
 --	Print 'Unknown Error'
