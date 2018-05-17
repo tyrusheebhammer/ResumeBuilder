@@ -124,7 +124,6 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 			int rs = pStmt.executeUpdate();
 			ResultSet returnSet = pStmt.getResultSet();
 			System.out.println(returnSet);
-			System.out.println(rs);
 			while(pStmt.getMoreResults()) {
 				returnSet = pStmt.getResultSet();
 				System.out.println(returnSet);}
