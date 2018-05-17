@@ -1,12 +1,14 @@
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
@@ -16,8 +18,8 @@ public class DbConnection {
 	
 	private Connection connection = null;
 
-	private String databaseName;
-	private String serverName;
+	String databaseName;
+	String serverName;
 	
 	public DbConnection(String serverName, String databaseName) {
 
@@ -66,7 +68,6 @@ public class DbConnection {
 					"Select Password From Student Where StudentID="+"'"+Username+"'");
 			if (rs.next()) {
 				password = rs.getString("Password");
-				System.out.println(password);
 			}
 			rs.close();
 			return password;
@@ -95,6 +96,8 @@ public class DbConnection {
 	        cs.execute();
 	        cs.close();
 	        
+	        
+	        
 	    } catch (SQLException e ) {
 	    	JOptionPane.showMessageDialog(null, e.getMessage());
 	    }
@@ -105,7 +108,7 @@ public class DbConnection {
 		
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-			cs = connection.prepareCall("{? = call AddExperiencesp( ?, ?, ?, ?, ?)}");
+			cs = connection.prepareCall("{? = call AddExperience( ?, ?, ?, ?, ?)}");
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setString(2, SID);
 	        cs.setString(3, name);
@@ -132,7 +135,8 @@ public class DbConnection {
 		CallableStatement cs = null;
 		
 		try {
-			cs = connection.prepareCall("{? = call AddDegreesp( ?, ?, ?, ?, ?)}");
+			
+			cs = connection.prepareCall("{? = call AddDegree( ?, ?, ?, ?, ?)}");
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setString(2, SID);
 	        cs.setString(3, name);
@@ -149,4 +153,41 @@ public class DbConnection {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public ArrayList<String[]> filterCompanies(String SID, double salary, String date, String location, String companyName, int qb) {
+		
+		ArrayList<String[]> toReturn = new ArrayList<>();
+		PreparedStatement cs = null;
+		ResultSet rs = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		try {
+			cs = connection.prepareStatement("{? = call FilterPositions( ?, ?, ?, ?, ?, ?)}");
+			cs.setString(2, SID);
+	        cs.setDouble(3, salary);
+	        Date sDate = sdf.parse(date);
+	        java.sql.Date sDateSQL = new java.sql.Date(sDate.getTime());
+	        cs.setDate(4, sDateSQL);
+	        cs.setString(5, location);
+	        cs.setString(6, companyName);
+	        cs.setInt(6, qb);
+	        cs.execute();
+	        cs.close();
+	             
+	        rs=cs.getResultSet();
+			
+			while(rs.next()) {
+				String arr[]={rs.getString("company"),"PUT SOMETHING HERE",Double.toString(rs.getDouble("salary")),sdf.format(rs.getDate("startDate")),rs.getString("location")};
+				toReturn.add(arr);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+
+		}
+		return toReturn;
+		
+	}
+	
 }

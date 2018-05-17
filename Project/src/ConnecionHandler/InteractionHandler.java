@@ -1,3 +1,6 @@
+package ConnecionHandler;
+
+
 import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -66,47 +69,49 @@ public class InteractionHandler {
 	 * @return
 	 * @throws ParseException 
 	 */
-	public ArrayList<ArrayList<String>> filterPositions(String studentID, Double salary, String date, String location, String Company, Integer isQualified) throws ParseException{
+	public ArrayList<String[]> filterPositions(String studentID, Double salary, String location, String Company, Integer isQualified) throws ParseException{
 		
 		//Initial local variables 
-		ArrayList<ArrayList<String>> returnSet = new ArrayList<ArrayList<String>>();
+		ArrayList<String[]> returnSet = new ArrayList<>();
 		PreparedStatement pStmt = null; 
 		ResultSet rs = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
 		Date mDate = null;
 		//Query the database
 		try {
-			if(date != null){
-				 mDate = (Date) sdf.parse(date);				
-			}
-			if(salary == null){
+			if(salary== null){
 				salary = DEAFULT_SALARY;
 			}
-			pStmt = dbs.getConnection().prepareStatement("{call FilterPositions(?, ?, ?, ?, ?, ?)}");
+			if(dbs == null){
+				System.out.println("dbs is null");
+			}
+			if(dbs.getConnection()==null) {
+				System.out.println("FUUUUCKKKKKK");
+			}
+			pStmt = dbs.getConnection().prepareStatement("{call FilterPositions(?, ?, ?, ?, ?)}");
+			
 			pStmt.setString(1, studentID);
 			pStmt.setDouble(2, salary);				
-			pStmt.setDate(3, mDate);
-			pStmt.setString(4, location);
-			pStmt.setString(5, Company);
-			pStmt.setInt(6, isQualified);
+			pStmt.setString(3, location);
+			pStmt.setString(4, Company);
+			pStmt.setInt(5, isQualified);
 			rs= pStmt.executeQuery();
 			
 			//Adding the result set values to the nested array list
 			while(rs.next()){
-				ArrayList<String> currentRow = new ArrayList<>(); 
-				currentRow.add(rs.getString("Company Name"));
-				currentRow.add(rs.getString("Position Name"));
-				currentRow.add(rs.getString("Description"));
-				currentRow.add(rs.getString("Location"));
-				currentRow.add(rs.getString("Salary"));
-				currentRow.add(rs.getString("Start Date"));
+				String[] currentRow = {rs.getString("Company"),
+				rs.getString("Position Name"),
+				rs.getString("Salary"),
+				rs.getString("Location"),
+				rs.getString("Description")};
+				
 				returnSet.add(currentRow);
 			}
 		
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} 
 		
 		return returnSet;
 		

@@ -11,10 +11,16 @@ public class DataDisplay {
 	int w;
 	int h;
 	
+	String loginID;
+	
 	int l;
 	int r;
 	int t;
 	int b;
+	
+	Button searchButton;
+	TextBox salary, location, company, qualified;
+	
 	ArrayList<String[]> data = new ArrayList<>();
 	
 	int offset;
@@ -31,15 +37,22 @@ public class DataDisplay {
 		t=y-h/2;
 		b=y+h/2;
 		
-		String arr[] = {"Microsoft","Computer Engineer","100,000","12/12/2018","Wherever Microsoft is Located"};
-		data.add(arr);
-		String arr1[] = {"Google","Software Engineer","120,000","10/15/2017","Wherever Google is Located"};
-		data.add(arr1);
-		String arr2[] = {"Apple","Computer Scientist","110,000","04/11/2018","Wherever Apple is Located"};
-		data.add(arr2);
-		String arr3[] = {"McDonalds","Cashier","20,000","12/24/2016","Wherever McDonalds is Located"};
-		data.add(arr3);
+		searchButton = new Button(p, "Search", p.width / 2, p.height / 2-125, 330, 50);
 		
+		salary= new TextBox(p, "Salary", p.width / 2-600, p.height / 2 - 200, 300, 50, false);
+		location= new TextBox(p, "Location", p.width / 2-200, p.height / 2 - 200, 300, 50, false);
+		company= new TextBox(p, "Company", p.width / 2+200, p.height / 2 - 200, 300, 50, false);
+		qualified= new TextBox(p, "Qualified", p.width / 2+600, p.height / 2 - 200, 300, 50, false);
+		
+		String arr[] = {"Microsoft","Computer Engineer","100,000","Microsoft Location","dsa"};
+		data.add(arr);
+		String arr1[] = {"Google","Software Engineer","120,000","Google Location","asd"};
+		data.add(arr1);
+		String arr2[] = {"Apple","Computer Scientist","110,000","Apple Location","asddas"};
+		data.add(arr2);
+		String arr3[] = {"McDonalds","Cashier","20,000","McDonalds Location","asdas"};
+		data.add(arr3);
+				
 		offset =0;
 	}
 	
@@ -69,7 +82,21 @@ public class DataDisplay {
 		p.rect(r-40,t+40,40,b-t-40);
 		p.rect(r-40, b-40, 40, 40);
 		
+		searchButton.draw();
+		salary.draw();
+		location.draw();
+		company.draw();
+		qualified.draw();
+		
 	}
+	
+	public void keyPressed() {
+		salary.ifkeyPressed();
+		location.ifkeyPressed();
+		company.ifkeyPressed();
+		qualified.ifkeyPressed();
+	}
+	
 	public void upClicked() {
 		if (p.mouseX > r-40 && p.mouseX < r && p.mouseY > t
 				&& p.mouseY < t+40) {
@@ -84,6 +111,42 @@ public class DataDisplay {
 			offset++;
 		}
 	}
+	public boolean searchClicked() {
+		return searchButton.clicked();
+		
+	}
 	
+	public void addPositions(ArrayList<String[]> list) {
+		data.clear();
+		data.addAll(list);
+	}
 	
+	public void setLoginID(String ID) {
+		loginID=ID;
+	}
+	public String getLoginID() {
+		return loginID;
+	}
+	public String[] getSearchArgs() {
+		String s=salary.getEntry();
+		String l=location.getEntry();
+		String c=company.getEntry();
+		String q=qualified.getEntry();
+		
+		if (location.getEntry().equals("")) {
+			l=null;
+		}
+		if (salary.getEntry().equals("")) {
+			s=null;
+		}
+		if (company.getEntry().equals("")) {
+			c=null;
+		}
+		if (qualified.getEntry().equals("")) {
+			q=null;
+		}
+		
+		String[] arr = {s,l,c,q};
+		return arr;
+	}
 }

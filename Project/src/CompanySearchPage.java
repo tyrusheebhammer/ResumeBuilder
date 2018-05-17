@@ -1,3 +1,7 @@
+import java.text.ParseException;
+
+import ConnecionHandler.DatabaseConnectionService;
+import ConnecionHandler.InteractionHandler;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
@@ -12,10 +16,14 @@ public class CompanySearchPage {
 
 	private String loginID;
 	
+	
 	private int[] dataDims;
 	
 	String consoleText;
 	String page;
+	
+	DatabaseConnectionService Dbc;
+	InteractionHandler handler;
 	
 	public CompanySearchPage(PApplet p_, DbConnection dbc_) {
 		p=p_;
@@ -30,6 +38,12 @@ public class CompanySearchPage {
 		
 		consoleText = "";
 		page = "company";
+		System.out.println(dbc.serverName+" "+dbc.databaseName);
+		Dbc = new DatabaseConnectionService(dbc.serverName, dbc.databaseName);
+		Dbc.connect("ResumeBuilder38", "Password38");
+		System.out.println(Dbc.getConnection() == null);
+		handler = new InteractionHandler(Dbc);
+		//handler.getQualifiedPositions("SomeStudentID");
 	}
 	
 	public void draw() {
@@ -44,12 +58,36 @@ public class CompanySearchPage {
 
 	}
 	public void keyPressed() {
-
+		data.keyPressed();
 	}
 	
 	public void mouseClicked() {
 		data.upClicked();
 		data.downClicked();
+		if (data.searchClicked()) {
+			Double salary;
+			Integer qual;
+			if (data.getSearchArgs()[0]==null) {
+				salary=null;	
+			} else {
+				salary=Double.parseDouble(data.getSearchArgs()[0]);
+			}
+			if (data.getSearchArgs()[3]==null) {
+				changeConsoleText("Make sure Qualified is filled out");	
+			} else {
+				qual=Integer.parseInt(data.getSearchArgs()[3]);
+				
+				try {
+					data.addPositions(handler.filterPositions(loginID, salary, data.getSearchArgs()[1], data.getSearchArgs()[2], qual));
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
 		if (home.clicked()) {
 			changePage("home");
 		}

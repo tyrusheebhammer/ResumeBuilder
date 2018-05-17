@@ -1,3 +1,5 @@
+import ConnecionHandler.DatabaseConnectionService;
+import ConnecionHandler.InteractionHandler;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
@@ -15,19 +17,29 @@ public class HomePage {
 	String page;
 	Animation gif;
 	
+	SmallDataDisplay experiences;
+	SmallDataDisplay degrees;
+	
 	public HomePage(PApplet p_, DbConnection dbc_) {
 		p=p_;
 		dbc=dbc_;
 		
-		addExp = new Button(p, "Add Experience", p.width / 2-600, p.height / 2 +100, 330, 50);
-		companySearch = new Button(p, "Search for a Company", p.width / 2, p.height / 2 +100, 450, 50);
-		addDegree = new Button(p, "Add Degree", p.width / 2+600, p.height / 2 +100, 300, 50);
+		addExp = new Button(p, "Add Experience", p.width / 2-600, p.height / 2 -400, 330, 50);
+		companySearch = new Button(p, "Search for a Company", p.width / 2, p.height / 2 +20, 450, 50);
+		addDegree = new Button(p, "Add Degree", p.width / 2+600, p.height / 2 -400, 300, 50);
+		
+		experiences = new SmallDataDisplay(p,p.width/2-600,p.height/2,500,600);
+		degrees = new SmallDataDisplay(p,p.width/2+600,p.height/2,500,600);
 		
 		loginID=null;
 		
 		consoleText = "";
 		page = "home";
 		gif = new Animation(p, "tenor",10);
+		
+//		DatabaseConnectionService Dbc = new DatabaseConnectionService(dbc.serverName, dbc.databaseName);
+//		InteractionHandler handler = new InteractionHandler(Dbc);
+//		handler.getQualifiedPositions("SomeStudentID");
 	}
 	
 	public void draw() {
@@ -41,6 +53,9 @@ public class HomePage {
 		addExp.draw();
 		companySearch.draw();
 		addDegree.draw();
+		
+		experiences.draw();
+		degrees.draw();
 
 	}
 	public void keyPressed() {
