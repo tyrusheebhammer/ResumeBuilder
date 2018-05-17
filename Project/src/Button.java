@@ -1,6 +1,7 @@
 import processing.core.PApplet;
 import processing.core.PConstants;
 
+
 public class Button {
 	private PApplet p;
 	private String title;
@@ -14,6 +15,8 @@ public class Button {
 		y = y_;
 		w = w_;
 		h = h_;
+		
+		
 	}
 
 	public void draw() {

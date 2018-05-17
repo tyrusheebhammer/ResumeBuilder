@@ -26,7 +26,7 @@ public class DegreePage {
 		addDegree = new Button(p, "Add Degree", p.width / 2, 3*p.height / 16+50, 330, 50);
 		home = new Button(p, "Home", p.width / 8, p.height / 8, 330, 50);
 		
-		degreeName= new TextBox(p, "Name of University", p.width / 2-300, p.height / 2 - 100, 570, 50, false);;
+		degreeName= new TextBox(p, "Name of University", p.width / 2-300, p.height / 2 - 100, 570, 50, false);
 		gradYear= new TextBox(p, "Graduation Year", p.width / 2+300, p.height / 2 - 100, 570, 50, false);
 		type = new TextBox(p, "Type of Degree", p.width / 2-300, p.height / 2 +50, 570, 50, false);
 		field= new TextBox(p, "Field of Degree", p.width / 2+300, p.height / 2 +50, 570, 50, false);
