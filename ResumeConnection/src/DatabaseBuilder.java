@@ -123,10 +123,13 @@ public DatabaseBuilder(DatabaseConnectionService dbs){
 			pStmt.setString(5, Company);
 			int rs = pStmt.executeUpdate();
 			ResultSet returnSet = pStmt.getResultSet();
-			System.out.print(rs);
-			while(pStmt.getMoreResults()) {pStmt.getResultSet();}
+			System.out.println(returnSet);
+			System.out.println(rs);
+			while(pStmt.getMoreResults()) {
+				returnSet = pStmt.getResultSet();
+				System.out.println(returnSet);}
 			dbs.getConnection().commit();
-			System.out.println();
+			
 			return returnSet;
 		} catch (SQLException e) {
 			e.printStackTrace();
